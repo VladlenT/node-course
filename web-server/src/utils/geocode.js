@@ -17,7 +17,7 @@ const geocode = (address, callback) => {
       const coords = features[0].center.reverse().join(', ');
       callback(coords, error);
     } else {
-      callback(null, 'Invalid input!');
+      callback(null, 'Unable to find the location. Try another search.');
     }
   });
 };
