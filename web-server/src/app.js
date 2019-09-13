@@ -2,6 +2,9 @@ const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
 
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
+
 const app = express();
 
 // Define paths for Express config
@@ -40,7 +43,29 @@ app.get('/help', (req, res) => {
 });
 
 app.get('/weather', (req, res) => {
-  res.send({ forecast: 'Weather', location: 228 });
+  const { address } = req.query;
+
+  if (!address) {
+    return res.send({ error: 'You must provide an address!' });
+  }
+
+  geocode(address, (coords, error) => {
+    forecast(coords, error, (forecastData, error) => {
+      if (error) {
+        return res.send({ error });
+      }
+
+      res.send(forecastData);
+    });
+  });
+});
+
+app.get('/help/*', (req, res) => {
+  res.render('404', { title: 404, errorMsg: 'Article not found', author: 'Vladlen Tereshchenko' });
+});
+
+app.get('*', (req, res) => {
+  res.render('404', { title: 404, errorMsg: "Page doesn't exist", author: 'Vladlen Tereshchenko' });
 });
 
 app.listen(3000, () => {
