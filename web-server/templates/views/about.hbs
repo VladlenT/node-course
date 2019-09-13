@@ -11,7 +11,11 @@
   <title>About page.</title>
 </head>
 <body>
-  <h1>From a static file. {{ title }}</h1>
+  {{> header }}
+
+  <br>
   <img src="/assets/img/cat.jpg" alt="cat" />
+
+  {{> footer }}
 </body>
 </html>
