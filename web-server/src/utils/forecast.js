@@ -12,7 +12,8 @@ function forecast(coords, error, callback) {
     const { body } = response;
     const forecastData = {
       location: body.timezone,
-      forecast: `It is currently ${body.currently.temperature}\u00B0C degrees out. There is ${body.currently.precipProbability}% chance of rain.`,
+      forecast: `It is currently ${body.currently.temperature}\u00B0C degrees out. There is ${body.currently.precipProbability}% chance of rain. \n
+      Air humidity is ${body.currently.humidity}%.`,
     };
 
     callback(forecastData, error);

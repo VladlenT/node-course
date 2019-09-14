@@ -5,12 +5,13 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "serve": "nodemon src/app.js -e hbs,js"
+    "serve": "nodemon src/app.js -e js,hbs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.2",
     "express": "^4.17.1",
     "hbs": "^4.0.4",
     "request": "^2.88.0"
