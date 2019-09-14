@@ -16,7 +16,6 @@ function getWeatherForecast(e) {
         clearAll(messageTwo);
         return;
       }
-      
       messageOne.textContent = res.location;
       messageTwo.textContent = res.forecast;
     })
