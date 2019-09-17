@@ -30,4 +30,4 @@ function getWeatherForecast(e) {
 const weatherForm = document.querySelector('form');
 weatherForm.addEventListener('submit', getWeatherForecast);
 
-const clearAll = (...inputsArray) => inputsArray.forEach((e) => e.textContent = '');
+const clearAll = (...inputsArray) => inputsArray.forEach(e => (e.textContent = ''));
