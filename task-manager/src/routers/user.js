@@ -11,7 +11,32 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send(e);
+  }
+});
+
+// Logout
+router.post('/users/logout', auth, async (req, res) => {
+  const user = req.user;
+  try {
+    user.tokens = user.tokens.filter(({ token }) => token !== req.token);
+    await user.save();
+
+    res.send();
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
+router.post('/users/logoutAll', auth, async (req, res) => {
+  const user = req.user;
+  try {
+    user.tokens = [];
+    await user.save();
+
+    res.send();
+  } catch (e) {
+    res.status(500).send();
   }
 });
 
