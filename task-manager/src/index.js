@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 require('./db/mongoose');
 const userRouter = require('./routers/user');
@@ -14,16 +16,15 @@ app.listen(port, () => {
   console.log(`App is up on http://localhost:${port}`);
 });
 
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const secret = process.env.JWT_SECRET;
 
-// const myFunc = async () => {
-//   const token = jwt.sign({ _id: 'abc123' }, 'thisIsSECRET', {
-//     expiresIn: '7 days',
-//   });
-//   console.log('token >>>>', token);
-//
-//   const data = jwt.verify(token, 'thisIsSECRET');
-//   console.log('data >>>>', data);
-// };
-//
-// myFunc();
+const myFunc = async () => {
+  const token = jwt.sign({ _id: 'abc123' }, secret, {
+    expiresIn: '7 days',
+  });
+  const data = await jwt.verify(token, secret);
+  console.log('data >>>>', data);
+};
+
+myFunc();
