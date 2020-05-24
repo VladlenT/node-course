@@ -53,6 +53,9 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    avatar: {
+      type: Buffer,
+    },
   },
   { timestamps: true },
 );
@@ -77,7 +80,7 @@ userSchema.virtual('tasks', { ref: 'Task', localField: '_id', foreignField: 'own
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
 
-  return { ...user, password: undefined, tokens: undefined };
+  return { ...user, password: undefined, tokens: undefined, avatar: undefined };
 };
 
 userSchema.methods.generateAuthToken = async function () {
