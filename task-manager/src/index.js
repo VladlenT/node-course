@@ -1,4 +1,11 @@
-require('dotenv').config();
+const path = require('path');
+
+require('dotenv').config({
+  path:
+    process.env.NODE_ENV === 'PROD'
+      ? path.resolve(__dirname, '../production.env')
+      : path.resolve(__dirname, '../.env'),
+});
 
 const express = require('express');
 require('./db/mongoose');
