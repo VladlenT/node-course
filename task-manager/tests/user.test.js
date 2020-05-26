@@ -1,17 +1,18 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../src/app');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const User = require('../models/user');
+const User = require('../src/models/user');
 
+const userOneId = new mongoose.Types.ObjectId();
 const userOne = {
-  _id: new mongoose.Types.ObjectId(),
+  _id: userOneId,
   name: 'Mike',
   email: 'mike@example.com',
   password: '56what!!!',
   tokens: [
     {
-      token: jwt.sign({ _id: this._id }, process.env.JWT_SECRET),
+      token: jwt.sign({ _id: userOneId }, process.env.JWT_SECRET),
     },
   ],
 };
@@ -37,7 +38,10 @@ test('Should signup a new user', async () => {
 });
 
 test('Should login existing users', async () => {
-  await request(app).post('/users/login').send(userOne).expect(200);
+  const response = await request(app).post('/users/login').send(userOne).expect(200);
+
+  const user = await User.findById(userOneId);
+  expect(response.body.token).toBe(user.tokens[1].token);
 });
 
 test('Should not login not existing users', async () => {
@@ -61,9 +65,22 @@ test('Should delete account for user', async () => {
     .delete('/users/me')
     .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
     .send()
-    .expect(resp => resp.status === 200);
+    .expect(200);
+
+  const user = await User.findById(userOneId);
+  expect(user).toBeNull();
 });
 
 test('Should not delete account for unauthenticated use', async () => {
   await request(app).delete('/users/me').send().expect(401);
+});
+
+test('Should upload avatar image', async () => {
+  await request(app)
+    .post('/users/me/avatar')
+    .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+    .attach('avatar', 'tests/fixtures/profile-pic.jpg')
+    .expect(200);
+  const user = await User.findById(userOneId);
+  expect(user.avatar).toEqual(expect.any(Buffer));
 });
