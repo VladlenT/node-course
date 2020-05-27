@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "set NODE_ENV=TEST&& jest --watch",
+    "test": "set NODE_ENV=TEST&& jest --watch --runInBand",
     "start": "node src/index",
     "dev": "set NODE_ENV=DEV&& nodemon src/index",
     "prod": "set NODE_ENV=PROD&& nodemon src/index"
