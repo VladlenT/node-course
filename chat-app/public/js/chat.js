@@ -8,15 +8,17 @@ const form = document.querySelector('form');
 const submitBtn = form.elements.namedItem('submit');
 const messageInput = form.elements.namedItem('message');
 
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
 form.addEventListener('submit', e => {
   e.preventDefault();
-  submitBtn.setAttribute('disabled', 'disabled');
-  messageInput.setAttribute('disabled', 'disabled');
+  submitBtn.disabled = true;
+  messageInput.disabled = true;
 
   socket.emit('sendMessage', messageInput.value, acknowledgement => {
-    submitBtn.removeAttribute('disabled');
+    submitBtn.disabled = false;
 
-    messageInput.removeAttribute('disabled');
+    messageInput.disabled = false;
     messageInput.value = '';
     messageInput.focus();
 
@@ -24,16 +26,20 @@ form.addEventListener('submit', e => {
   });
 });
 
-socket.on('locationMessage', ({ link, createdAt }) => {
+socket.on('locationMessage', ({ link, createdAt, username }) => {
   const html = Mustache.render(locationMessageTemplate, {
     link,
+    username,
     createdAt: moment(createdAt).format('HH:mm'),
   });
   messages.insertAdjacentHTML('beforeend', html);
 });
 
 socket.on('message', message => {
+  console.log('message >>>>', message);
+
   const html = Mustache.render(messageTemplate, {
+    username: message.username,
     message: message.text,
     createdAt: moment(message.createdAt).format('HH:mm'),
   });
@@ -52,3 +58,5 @@ locationBtn.addEventListener('click', () => {
     });
   });
 });
+
+socket.emit('join', { username, room });

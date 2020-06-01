@@ -6,9 +6,6 @@ const { generateMessage, generateUrl } = require('./utils/messages');
 io.on('connection', socket => {
   console.log('new WebSockets connection');
 
-  socket.emit('message', generateMessage('Welcome!'));
-  socket.broadcast.emit('message', 'A new user has joined');
-
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter();
 
@@ -16,8 +13,15 @@ io.on('connection', socket => {
       return callback('Rejected. Profanity is not allowed!');
     }
 
-    io.emit('message', generateMessage(message));
+    io.to('LUL').emit('message', generateMessage(message));
     callback('Delivered!');
+  });
+
+  socket.on('join', ({ username, room }) => {
+    socket.join(room);
+
+    socket.emit('message', generateMessage('Welcome!'));
+    socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined`, username));
   });
 
   socket.on('sendLocation', (coords, acknowledgement) => {
